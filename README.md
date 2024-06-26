@@ -41,13 +41,13 @@ aadasdsadsa: 值类型不匹配，已忽略
  - Execl表格可直接导入
 
 ```
-{
+[
   { "SN": "BPB4BX3",
     "bluetooth_mac": "60:A5:E2:43:BE:48",
     "wired_mac": "04:BF:1B:65:ED:9A",
     "wireless_mac": "60:A5:E2:43:BE:44"
   }
-}
+]
 ```
 
  - 多个如下:
