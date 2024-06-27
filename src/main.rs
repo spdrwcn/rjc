@@ -16,15 +16,29 @@ use std::time::Instant;
 struct Cli {
     #[arg(short, long, default_value_t = String::from("redis://127.0.0.1:6379/0"), value_parser = redis_ip_address_parser)]
     ip_address: String,
-    #[arg(short, long, default_value_t = String::from("mac.csv"))]
+    #[arg(short, long, default_value_t = String::from("mac.csv"), value_parser = path_parser)]
     path: String,
 }
 
 fn redis_ip_address_parser(s: &str) -> Result<String, String> {
+
     let ip_pattern = Regex::new(r"^redis://((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?):([1-9]\d{0,4}|[1-5]\d{4}|6[0-4]\d{3}|65[0-4]\d{2}|655[0-2]\d|6553[0-5])/([0-9]|1[0-5])$").unwrap();
 
     if !ip_pattern.is_match(s) {
         return Err("错误: 请输入正确的Redis地址格式, 例如 'redis://127.0.0.1:6379/0'".to_string());
+    }
+    Ok(s.to_string())
+}
+
+fn path_parser(s: &str) -> Result<String, String> {
+    
+    let path_pattern = Regex::new(r"^[a-zA-Z0-9._\-/~]*([/\\][a-zA-Z0-9._\-/~]+)*(\.csv|\.json)$").unwrap();
+
+    if !path_pattern.is_match(s) {
+        return Err("错误: 请输入正确的路径或文件名格式. 支持如下格式: 
+                   - 无路径: 'file.csv' 或 'file.json'
+                   - Linux/Unix: '/home/user/file.csv' 或 '/home/user/file.json'
+                   - Windows: 'C:\\Users\\user\\file.csv' 或 'C:\\Users\\user\\file.json' 或 'C:/Users/user/file.csv' 或 'C:/Users/user/file.json'".to_string());
     }
     Ok(s.to_string())
 }
